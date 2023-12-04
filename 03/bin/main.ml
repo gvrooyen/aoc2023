@@ -2,6 +2,6 @@ open! Core
 open Aoc
 
 let () =
-  let x = foo "input.txt" in
+  let s = read_schematic "input.txt" in
   printf "%s\n" title;
-  printf "Part 1 foo: %d\n" x;
+  printf "Part 1 sum: %d\n" (sum_of_parts s);

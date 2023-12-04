@@ -33,4 +33,13 @@ let%expect_test _ =
 let%expect_test _ =
   let partnums = find_partnums s 1 3 in
   print_s [%sexp (partnums : int list)];
-  [%expect {||}]
+  [%expect {| (35 467) |}]
+
+let%expect_test _ =
+  let parts = find_all_parts s in
+  print_s [%sexp (parts : int list)];
+  [%expect {| (35 467 633 617 592 664 598 755) |}]
+
+let%test_unit "sum_of_parts" =
+  [%test_eq: int] (sum_of_parts s) 4361
+

@@ -1,6 +1,6 @@
 open! Core
 
-let title = "AoC 2023 - Day ?"
+let title = "AoC 2023 - Day 3"
 
 (* PART 1 *)
 
@@ -61,13 +61,16 @@ let find_partnums s line col =
   List.map dirs ~f:(fun (dy, dx) ->
     pull_number (List.nth s (line + dy)) ~idx:(col + dx)
   ) |> List.filter_map ~f:Fn.id
-    (* |> List.dedup_and_sort ~compare:Int.compare *)
+    |> List.dedup_and_sort ~compare:Int.compare
+
+let find_all_parts s =
+  let syms = find_symbols s in
+  List.fold syms ~init:[] ~f:(fun acc sym ->
+    acc @ (find_partnums s sym.line sym.col)
+  ) 
+
+let sum_of_parts s =
+  List.sum (module Int) (find_all_parts s) ~f:Fn.id
 
 (* PART 2 *)
 
-let bar (filename : string) =
-  In_channel.with_file filename ~f:(fun file ->
-    In_channel.fold_lines file ~init:0 ~f:(fun acc line ->
-      acc + String.length(line)
-    )
-  )
