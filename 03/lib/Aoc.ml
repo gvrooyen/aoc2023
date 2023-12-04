@@ -74,3 +74,23 @@ let sum_of_parts s =
 
 (* PART 2 *)
 
+let find_ast (s : schematic) =
+  List.foldi s ~init:[] ~f:(fun i acc line ->
+    String.foldi line ~init:acc ~f:(fun j acc c ->
+      match c with
+        | '*' -> { line = i; col = j } :: acc
+        | _ ->  acc
+    )
+  ) |> List.rev
+
+let find_gears s =
+  let ast = find_ast s in
+  List.fold ast ~init:[] ~f:(fun acc pos ->
+    let gearnums = find_partnums s pos.line pos.col in
+    if List.length gearnums = 2 then
+      (List.nth_exn gearnums 0) * (List.nth_exn gearnums 1) :: acc
+    else acc
+  )
+
+let sum_of_gears s =
+  List.sum (module Int) (find_gears s) ~f:Fn.id

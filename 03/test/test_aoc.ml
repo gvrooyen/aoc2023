@@ -43,3 +43,5 @@ let%expect_test _ =
 let%test_unit "sum_of_parts" =
   [%test_eq: int] (sum_of_parts s) 4361
 
+let%test_unit "sum_of_gears" =
+  [%test_eq: int] (sum_of_gears s) 467835
