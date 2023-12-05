@@ -38,3 +38,12 @@ let%test_unit "do_maps None" =
 
 let%test_unit "find_closest" =
   [%test_eq: int] (find_closest a) 35
+
+let%test_unit "intersect" =
+  let r1 = [ {min = 0; max = 9}; {min = 15; max = 24} ] in
+  let r2 = [ {min = 5; max = 12}; {min = 20; max = 29} ] in
+  let ri = intersect r1 r2 in
+  [%test_eq: range list] ri
+    [ {min = 0; max = 4}; {min = 5; max = 9};
+      {min = 15; max = 19}; {min = 20; max = 24} ]
+    

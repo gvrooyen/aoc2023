@@ -62,9 +62,40 @@ let read_almanac (filename : string) : almanac =
       | _ -> failwith "Syntax error reading seed list"
   )
 
-let find_closest (a: almanac) =
+let find_closest (a : almanac) =
   List.map a.seeds ~f:(fun x ->
     List.fold a.maps ~init:x ~f:(fun acc m -> do_maps m acc)
   )
   |> List.min_elt ~compare:Int.compare
   |> Option.value_exn
+
+(* PART 2 *)
+
+type range = {
+  min: int;
+  max: int;
+} [@@deriving sexp, compare]
+
+(** Take the first range list, and split it in places where there are discontinuities
+    in the second range list. The result will be the same number of ranges or more as
+    in the first list, and will cover all integers contained in the first list. Ranges
+    where `r2` don't overlap with `r1` will fall away; ranges where `r1` doesn't overlap
+    with `r2` will "fall through". We assume both lists are sorted by `min`, and that
+    there is no self-overlap in the individual range lists. *)
+let intersect (r1 : range list) (r2 : range list) : range list =
+  let rec loop acc r1' r2' =
+    match r1', r2' with
+      | [], _ -> List.rev acc
+      | _, [] -> (List.rev acc) @ r1'
+      | hd1 :: tl1, hd2 :: tl2 ->
+          if hd1.min < hd2.min then
+            if hd1.max < hd2.min then
+              loop (hd1 :: acc) tl1 r2'
+            else
+              loop ({min = hd1.min; max = hd2.min - 1} :: acc) ({min = hd2.min; max = hd1.max} :: tl1) r2'
+          else
+            
+  in loop [] r1 r2
+
+(* let find_closest_range (a : almanac) = *)
+(*   _ *)
