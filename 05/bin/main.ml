@@ -2,6 +2,6 @@ open! Core
 open Aoc
 
 let () =
-  let x = foo "input.txt" in
+  let a = read_almanac "input.txt" in
   printf "%s\n" title;
-  printf "Part 1 foo: %d\n" x;
+  printf "Part 1 closest: %d\n" (find_closest a);

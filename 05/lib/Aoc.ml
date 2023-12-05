@@ -15,10 +15,18 @@ type almanac = {
   maps: (pmap list) list;
 } [@@deriving sexp]
 
-let do_map m x =
+let do_map (m : pmap) x =
   if (x >= m.src) && (x < m.src + m.len) then
     Some (x - m.src + m.dst)
   else None
+
+let do_maps (maps : pmap list) x =
+  List.fold_until maps ~init:x
+    ~f:(fun acc m ->
+      match do_map m x with
+        | Some x' -> Stop x'
+        | None -> Continue acc
+    ) ~finish:Fn.id
 
 let nums_of_string s =
   String.split ~on:' ' s
@@ -53,3 +61,10 @@ let read_almanac (filename : string) : almanac =
           { seeds; maps = List.rev ((maps' |> List.rev) :: acc') }
       | _ -> failwith "Syntax error reading seed list"
   )
+
+let find_closest (a: almanac) =
+  List.map a.seeds ~f:(fun x ->
+    List.fold a.maps ~init:x ~f:(fun acc m -> do_maps m acc)
+  )
+  |> List.min_elt ~compare:Int.compare
+  |> Option.value_exn

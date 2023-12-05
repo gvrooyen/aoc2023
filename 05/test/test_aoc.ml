@@ -9,8 +9,13 @@ let%test_unit "do_map in range" =
 let%test_unit "nums_of_string" =
   [%test_eq: int list] (nums_of_string "1 2 3") [1; 2; 3]
 
+let%test_unit "nums_of_string spaces" =
+  [%test_eq: int list] (nums_of_string "   1  2    3 ") [1; 2; 3]
+
+let a = read_almanac "test.txt"
+
 let%expect_test _ =
-  print_s [%sexp ( read_almanac "test.txt" : almanac )];
+  print_s [%sexp ( a : almanac )];
   [%expect {|
     ((seeds (79 14 55 13))
      (maps
@@ -24,3 +29,12 @@ let%expect_test _ =
         ((src 64) (dst 68) (len 13)))
        (((src 69) (dst 0) (len 1)) ((src 0) (dst 1) (len 69)))
        (((src 56) (dst 60) (len 37)) ((src 93) (dst 56) (len 4)))))) |}]
+
+let%test_unit "do_maps" =
+  [%test_eq: int] (do_maps (List.hd_exn a.maps) 79) 81
+
+let%test_unit "do_maps None" =
+  [%test_eq: int] (do_maps (List.nth_exn a.maps 1) 81) 81
+
+let%test_unit "find_closest" =
+  [%test_eq: int] (find_closest a) 35
