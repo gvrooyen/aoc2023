@@ -71,31 +71,37 @@ let find_closest (a : almanac) =
 
 (* PART 2 *)
 
+(* Solution Approach
+   =================
+   For the current stage, calculate the location (`do_maps` through the remaining stages)
+   for each range minimum and add it to the solution list. Then, determine which minima of
+   next stage fall within the ranges of the current stage, and repeat the process. This
+   guarantees that all minima in the piecewise cascade of maps are tested so that the
+   smallest solution can be found.
+*)
+
 type range = {
   min: int;
   max: int;
 } [@@deriving sexp, compare]
 
-(** Take the first range list, and split it in places where there are discontinuities
-    in the second range list. The result will be the same number of ranges or more as
-    in the first list, and will cover all integers contained in the first list. Ranges
-    where `r2` don't overlap with `r1` will fall away; ranges where `r1` doesn't overlap
-    with `r2` will "fall through". We assume both lists are sorted by `min`, and that
-    there is no self-overlap in the individual range lists. *)
-let intersect (r1 : range list) (r2 : range list) : range list =
-  let rec loop acc r1' r2' =
-    match r1', r2' with
-      | [], _ -> List.rev acc
-      | _, [] -> (List.rev acc) @ r1'
-      | hd1 :: tl1, hd2 :: tl2 ->
-          if hd1.min < hd2.min then
-            if hd1.max < hd2.min then
-              loop (hd1 :: acc) tl1 r2'
-            else
-              loop ({min = hd1.min; max = hd2.min - 1} :: acc) ({min = hd2.min; max = hd1.max} :: tl1) r2'
-          else
-            
-  in loop [] r1 r2
+let in_rangelist rl x =
+  List.exists rl ~f:(fun r ->
+    (x >= r.min) && (x <= r.max)
+  )
 
-(* let find_closest_range (a : almanac) = *)
-(*   _ *)
+let rangelist_of_seeds seeds =
+  let rec loop rl seeds' =
+    match seeds' with
+      | [] -> List.rev rl
+      | min :: len :: tl -> loop ({ min; max = min + len - 1} :: rl) tl
+      | _ -> failwith "Seed list should contain an even number of integers"
+  in loop [] seeds
+
+let rangelist_of_maps (maps : pmap list) =
+  List.fold maps ~init:[] ~f:(fun acc m ->
+    { min = m.src; max = m.src + m.len - 1} :: acc
+    ) |> List.sort ~compare:(fun r1 r2 ->
+      Int.compare r1.min r2.min
+    )
+
