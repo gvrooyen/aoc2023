@@ -23,7 +23,7 @@ let do_map (m : pmap) x =
 let do_maps (maps : pmap list) x =
   List.fold_until maps ~init:x
     ~f:(fun acc m ->
-      match do_map m x with
+match do_map m x with
         | Some x' -> Stop x'
         | None -> Continue acc
     ) ~finish:Fn.id
@@ -75,7 +75,7 @@ let find_closest (a : almanac) =
    =================
    For the current stage, calculate the location (`do_maps` through the remaining stages)
    for each range minimum and add it to the solution list. Then, determine which minima of
-   next stage fall within the ranges of the current stage, and repeat the process. This
+   the next stage fall within the ranges of the current stage, and repeat the process. This
    guarantees that all minima in the piecewise cascade of maps are tested so that the
    smallest solution can be found.
 *)
@@ -105,3 +105,13 @@ let rangelist_of_maps (maps : pmap list) =
       Int.compare r1.min r2.min
     )
 
+let find_closest_range (a : almanac) =
+  let seedrange = rangelist_of_seeds a.seeds in
+  let rec scan_minima acc rl maps =
+    match maps with
+      | [] -> acc
+      | m :: tl ->
+          let sl = 
+  in
+  scan_minima [] seedrange a.maps
+  |> List.min_elt ~compare:Int.compare
