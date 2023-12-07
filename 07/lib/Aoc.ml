@@ -18,8 +18,17 @@ let foo (filename : string) =
     )
   )
 
-type hand_type = K5 | K4 | FH | K3 | PP | P | Z
+type hand_type = K5 | K4 | FH | K3 | PP | P | H
   [@@deriving sexp, compare]
+
+let enum_hand_type = function
+  | K5 -> 0
+  | K4 -> 1
+  | FH -> 2
+  | K3 -> 3
+  | PP -> 4
+  | P  -> 5
+  | H  -> 6
 
 type card_count = (char * int) list
   [@@deriving sexp, compare]
@@ -44,7 +53,17 @@ let hand_type_of_string s =
       |  (_, 3)  :: _ -> K3
       | [(_, 2); (_, 2); _] -> PP
       |  (_, 2) :: _ -> P
-      | _ -> Z
+      | _ -> H
+
+let hand_compare h1 h2 =
+  let h1', h2' = (hand_type_of_string h1 |> enum_hand_type), 
+    (hand_type_of_string h2 |> enum_hand_type) in
+  if h1' < h2' then -1 else if h1' > h2' then 1 else
+    List.zip_exn (String.to_list h1) (String.to_list h2)
+    |> List.fold_until ~init:0 ~f:(fun acc (c1, c2) ->
+        if Char.equal c1 c2 then Continue acc
+        else Stop (Char.compare c1 c2)
+      ) ~finish:(fun acc -> acc)
 
 (* PART 2 *)
 

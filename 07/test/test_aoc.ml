@@ -16,7 +16,7 @@ let%test_unit "hand_type" =
   [%test_eq: hand_type] (hand_type_of_string "A4AA5") K3;
   [%test_eq: hand_type] (hand_type_of_string "A6A62") PP;
   [%test_eq: hand_type] (hand_type_of_string "A78A9") P;
-  [%test_eq: hand_type] (hand_type_of_string "AKJQ2") Z
+  [%test_eq: hand_type] (hand_type_of_string "23456") H
 
 (* let%expect_test _ = *)
 (*   print_s [%sexp (1 + 1 : int)]; *)
