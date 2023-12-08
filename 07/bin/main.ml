@@ -2,6 +2,6 @@ open! Core
 open Aoc
 
 let () =
-  let x = foo "input.txt" in
+  let hb = read_handbids "input.txt" in
   printf "%s\n" title;
-  printf "Part 1 foo: %d\n" x;
+  printf "Part 1 winnings: %d\n" (winnings hb);
