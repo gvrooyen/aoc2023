@@ -4,7 +4,7 @@ let title = "AoC 2023 - Day 8"
 
 (* PART 1 *)
 
-type rl = Left | Right
+type lr = Left | Right
   [@@deriving sexp, compare]
 
 type fork = string * string
@@ -20,7 +20,7 @@ let camelmap_show cm =
   )
 
 type route = {
-  turns: rl list;
+  turns: lr list;
   cm: camelmap;
 }
 
@@ -47,6 +47,16 @@ let readmap (filename : string) : route =
     ) in
     {turns; cm}
   )
+
+let count_steps (r : route) =
+  let rec loop loc i n =
+    if String.equal loc "ZZZ" then n
+    else
+      let i' = i mod (List.length r.turns) in
+      match List.nth_exn r.turns i' with
+        | Left -> loop (Map.find_exn r.cm loc |> fst) (i' + 1) (n + 1)
+        | Right -> loop (Map.find_exn r.cm loc |> snd) (i' + 1) (n + 1)
+  in loop "AAA" 0 0
 
 (* PART 2 *)
 

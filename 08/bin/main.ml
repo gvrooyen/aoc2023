@@ -2,6 +2,6 @@ open! Core
 open Aoc
 
 let () =
-  let x = foo "input.txt" in
+  let r = readmap "input.txt" in
   printf "%s\n" title;
-  printf "Part 1 foo: %d\n" x;
+  printf "Part 1 steps: %d\n" (count_steps r);

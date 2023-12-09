@@ -4,7 +4,7 @@ open! Aoc
 let r = readmap "test.txt"
 
 let%test_unit "readmap" =
-  [%test_eq: rl list] r.turns [Right; Left]
+  [%test_eq: lr list] r.turns [Right; Left]
 
 let%expect_test _ =
   print_endline (camelmap_show r.cm);
@@ -16,3 +16,7 @@ let%expect_test _ =
     EEE -> (EEE, EEE)
     GGG -> (GGG, GGG)
     ZZZ -> (ZZZ, ZZZ) |}]
+
+let%test_unit "count_steps" =
+  [%test_eq: int] (count_steps r) 2
+
