@@ -1,0 +1,26 @@
+(lang dune 3.10)
+
+(name aoc)
+
+(generate_opam_files true)
+
+(source
+ (github gvrooyen/aoc2023))
+
+(authors "G-J van Rooyen")
+
+(maintainers "G-J van Rooyen")
+
+(license MIT)
+
+(documentation https://github.com/gvrooyen/aoc2023)
+
+(package
+ (name aoc)
+ (synopsis "Advent of Code 2023")
+ (description "A solution to one of the Advent of Code 2023 puzzles")
+ (depends ocaml dune)
+ (tags
+  (aoc)))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
