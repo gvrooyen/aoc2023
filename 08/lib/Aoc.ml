@@ -53,9 +53,11 @@ let count_steps (r : route) =
     if String.equal loc "ZZZ" then n
     else
       let i' = i mod (List.length r.turns) in
-      match List.nth_exn r.turns i' with
-        | Left -> loop (Map.find_exn r.cm loc |> fst) (i' + 1) (n + 1)
-        | Right -> loop (Map.find_exn r.cm loc |> snd) (i' + 1) (n + 1)
+      let f = Map.find_exn r.cm loc in
+      let next_loc = match List.nth_exn r.turns i' with
+        | Left -> fst f
+        | Right -> snd f
+      in loop next_loc (i' + 1) (n + 1)
   in loop "AAA" 0 0
 
 (* PART 2 *)
