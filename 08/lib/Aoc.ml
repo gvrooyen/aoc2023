@@ -33,7 +33,7 @@ let turns_of_string s =
   ) |> List.rev
 
 let readmap (filename : string) : route =
-  let r = Str.regexp "\\(^[A-Z]+\\) = (\\([A-Z]+\\), \\([A-Z]+\\))" in
+  let r = Str.regexp "\\(^[0-9A-Z]+\\) = (\\([0-9A-Z]+\\), \\([0-9A-Z]+\\))" in
   In_channel.with_file filename ~f:(fun file ->
     let turns = turns_of_string(In_channel.input_line_exn file) in
     let _ = In_channel.input_line_exn file in  (* skip blank line *)
@@ -62,9 +62,21 @@ let count_steps (r : route) =
 
 (* PART 2 *)
 
-let bar (filename : string) =
-  In_channel.with_file filename ~f:(fun file ->
-    In_channel.fold_lines file ~init:0 ~f:(fun acc line ->
-      acc + String.length(line)
-    )
-  )
+let check_last s c =
+  let c' = String.get s (String.length s - 1) in
+  Char.equal c' c
+
+let ghost_steps (r : route) =
+  let init = List.filter (Map.keys r.cm) ~f:(fun s -> check_last s 'A') in
+  let rec loop locs i n =
+    if List.for_all locs ~f:(fun s -> check_last s 'Z') then n
+    else
+      let i' = i mod (List.length r.turns) in
+      let locs' = List.map locs ~f:(fun loc ->
+        let f = Map.find_exn r.cm loc in
+        match List.nth_exn r.turns i' with
+          | Left -> fst f
+          | Right -> snd f
+      ) in
+      loop locs' (i' + 1) (n + 1)
+  in loop init 0 0

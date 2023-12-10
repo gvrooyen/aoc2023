@@ -20,3 +20,7 @@ let%expect_test _ =
 let%test_unit "count_steps" =
   [%test_eq: int] (count_steps r) 2
 
+let r = readmap "test2.txt"
+
+let%test_unit "ghost_steps" =
+  [%test_eq: int] (ghost_steps r) 6
