@@ -17,3 +17,12 @@ let%expect_test _ =
 
 let%test_unit "sum_histories" =
   [%test_eq: int] (sum_histories o) 114
+
+let x3 = [10; 13; 16; 21; 30; 45]
+
+let%test_unit "predict_left" =
+  [%test_eq: int] (predict_left x) (-3);
+  [%test_eq: int] (predict_left x3) 5
+
+let%test_unit "sum_histories_left" =
+  [%test_eq: int] (sum_histories_left o) 2

@@ -37,9 +37,21 @@ let sum_histories o =
 
 (* PART 2 *)
 
-let bar (filename : string) =
-  In_channel.with_file filename ~f:(fun file ->
-    In_channel.fold_lines file ~init:0 ~f:(fun acc line ->
-      acc + String.length(line)
-    )
+let predict_left x =
+  if List.is_empty x then 0
+  else let rec loop acc x' =
+    if List.is_empty x' then acc
+    else let x'' = diff x' in
+      if List.for_all x'' ~f:(fun y -> y = 0) then acc
+      else loop ((List.hd_exn x'') :: acc) x''
+  in
+  let hds = loop [List.hd_exn x] x in
+  let _, acc = List.fold hds ~init:(0, 0) ~f:(fun (_, acc) y ->
+      (y, y - acc)
+  ) in acc
+
+let sum_histories_left o =
+  List.fold o ~init:0 ~f:(fun acc x ->
+    let p = (predict_left x) in
+    acc + p
   )
